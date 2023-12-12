@@ -1,9 +1,9 @@
 from os import mkdir
 from typing import Any
-# from app_loader import App
-from console_loader import ConsoleLoader
+from loader_app import App
+from loader_console import ConsoleLoader
 
-# app = App()
+app = App()
 csl = ConsoleLoader()
 
 
@@ -37,8 +37,7 @@ def verify_interface_view() -> Any | None:
     if read_interface_view() == 'console':
         return csl.download_video()
     if read_interface_view() == 'app':
-        pass
-        # return app.mainloop()
+        return app.mainloop()
     else:
         return csl.download_video()
 
