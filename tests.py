@@ -1,13 +1,10 @@
 '''
-def download_video():
-    list_of_links = []
-    while True:
-        dialog = customtkinter.CTkInputDialog(text="Введи ссылку на видео с Youtube: ", title="Video")
-        links = str(dialog.get_input())
-        if links == '':
-            break
-        list_of_links.append(links)
-    for i in list_of_links:
-        youtube = YouTube(i)
-        youtube.streams.get_highest_resolution().download('Download/')
+    def change_video_resolution(self, new_video_resolution: str):
+        data = YouTube(self.save_video_entry.get())
+        if new_video_resolution == "highest":
+            return data.streams.get_highest_resolution().download('Download/')
+        elif new_video_resolution == "lowest":
+            return data.streams.get_lowest_resolution().download('Download/')
+        elif new_video_resolution == "audio":
+            return data.streams.get_audio_only().download('Download/')
 '''
