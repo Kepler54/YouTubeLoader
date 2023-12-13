@@ -2,6 +2,7 @@ import customtkinter
 from os import mkdir
 from threading import Thread
 from pytube import YouTube, Playlist
+from pytube.exceptions import RegexMatchError
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("dark-blue")
@@ -11,6 +12,10 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         self.pad = 10
+        self.button_text_color = "#DCE8EE"
+        self.button_fg_color = "#5c1f53"
+        self.button_hover_color = "#451e3f"
+        self.button_hover_color_extra = "#341b30"
 
         # window
         self.title("YouTubeLoader")
@@ -31,7 +36,11 @@ class App(customtkinter.CTk):
         # video resolution mode button
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
         self.video_resolution = customtkinter.CTkOptionMenu(
-            self.sidebar_frame, values=["Highest", "Lowest", "Audio"], command=self.change_appearance_mode_event
+            self.sidebar_frame, fg_color=self.button_fg_color, button_color=self.button_hover_color,
+            dropdown_fg_color=self.button_hover_color_extra, button_hover_color=self.button_hover_color_extra,
+            text_color=self.button_text_color, dropdown_text_color=self.button_text_color,
+            dropdown_hover_color=self.button_hover_color, values=["Highest", "Lowest", "Audio"],
+            command=self.change_appearance_mode_event
         )
         self.video_resolution.grid(row=5, column=0, padx=self.pad, pady=self.pad)
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
@@ -39,7 +48,11 @@ class App(customtkinter.CTk):
         # playlist resolution mode button
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
         self.playlist_resolution = customtkinter.CTkOptionMenu(
-            self.sidebar_frame, values=["Highest", "Lowest", "Audio"], command=self.change_appearance_mode_event
+            self.sidebar_frame, fg_color=self.button_fg_color, button_color=self.button_hover_color,
+            dropdown_fg_color=self.button_hover_color_extra, button_hover_color=self.button_hover_color_extra,
+            text_color=self.button_text_color, dropdown_text_color=self.button_text_color,
+            dropdown_hover_color=self.button_hover_color, values=["Highest", "Lowest", "Audio"],
+            command=self.change_appearance_mode_event
         )
         self.playlist_resolution.grid(row=6, column=0, padx=self.pad, pady=self.pad)
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
@@ -47,7 +60,11 @@ class App(customtkinter.CTk):
         # appearance mode option button
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(
-            self.sidebar_frame, values=["System", "Dark", "Light"], command=self.change_appearance_mode_event
+            self.sidebar_frame, fg_color=self.button_fg_color, button_color=self.button_hover_color,
+            dropdown_fg_color=self.button_hover_color_extra, button_hover_color=self.button_hover_color_extra,
+            text_color=self.button_text_color, dropdown_text_color=self.button_text_color,
+            dropdown_hover_color=self.button_hover_color, values=["System", "Dark", "Light"],
+            command=self.change_appearance_mode_event
         )
         self.appearance_mode_optionemenu.grid(row=1, column=0, padx=self.pad, pady=self.pad)
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
@@ -60,8 +77,8 @@ class App(customtkinter.CTk):
         self.save_video_entry = customtkinter.CTkEntry(self, placeholder_text="Введи ссылку на видео с Youtube: ")
         self.save_video_entry.grid(row=2, column=1, columnspan=2, padx=self.pad, pady=self.pad, sticky="nsew")
         self.save_video_button = customtkinter.CTkButton(
-            master=self, fg_color="transparent", border_width=2, text="Скачать",
-            text_color=("gray10", "#DCE4EE"), command=self.download_video
+            master=self, fg_color=self.button_fg_color, hover_color=self.button_hover_color, text="Скачать",
+            text_color=self.button_text_color, command=self.download_video
         )
         self.save_video_button.grid(row=2, column=4, padx=self.pad, pady=self.pad, sticky="nsew")
 
@@ -69,8 +86,8 @@ class App(customtkinter.CTk):
         self.save_playlist_entry = customtkinter.CTkEntry(self, placeholder_text="Введи ссылку на плейлист Youtube: ")
         self.save_playlist_entry.grid(row=3, column=1, columnspan=2, padx=self.pad, pady=self.pad, sticky="nsew")
         self.save_playlist_button = customtkinter.CTkButton(
-            master=self, fg_color="transparent", border_width=2, text="Скачать",
-            text_color=("gray10", "#DCE4EE"), command=self.download_playlist
+            master=self, fg_color=self.button_fg_color, hover_color=self.button_hover_color, text="Скачать",
+            text_color=self.button_text_color, command=self.download_playlist
         )
         self.save_playlist_button.grid(row=3, column=4, padx=self.pad, pady=self.pad, sticky="nsew")
 
@@ -83,19 +100,33 @@ class App(customtkinter.CTk):
         self.textbox.insert("1.0", f'Идёт загрузка видео: "{data.title}"\n')
 
     def get_playlist_info(self):
-        data = Playlist(self.save_playlist_entry.get())
-        self.textbox.insert("1.0", f'Идёт загрузка плейлиста: "{data.title}"\n')
+        try:
+            data = Playlist(self.save_playlist_entry.get())
+            self.textbox.insert("1.0", f'Идёт загрузка плейлиста: "{data.title}"\n')
+        except KeyError:
+            self.textbox.insert("1.0", "Введите ссылку на плейлист!\n")
+
+    def clear_video_placeholder(self):
+        self.save_video_entry.delete(0, 1000000)
+
+    def clear_playlist_placeholder(self):
+        self.save_playlist_entry.delete(0, 1000000)
 
     def save_video(self):
-        data = YouTube(self.save_video_entry.get())
-        return data.streams.get_highest_resolution().download('Download/')
+        try:
+            data = YouTube(self.save_video_entry.get())
+            self.clear_video_placeholder()
+            return data.streams.get_highest_resolution().download('Download/')
+        except RegexMatchError:
+            self.textbox.insert("1.0", "Введите ссылку на видео!\n")
 
     def save_playlist(self):
         links = Playlist(self.save_playlist_entry.get())
-        mkdir(f'Download/{links.title}')
+        self.clear_playlist_placeholder()
+        mkdir(f'Download/{"_".join(links.title.split())}')
         for i in links.video_urls:
             data = YouTube(i)
-            data.streams.get_highest_resolution().download(f'Download/{links.title}')
+            data.streams.get_highest_resolution().download(f'Download/{"_".join(links.title.split())}')
 
     def download_video(self):
         Thread(target=self.save_video).start()
