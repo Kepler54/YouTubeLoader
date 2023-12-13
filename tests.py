@@ -8,3 +8,8 @@
         elif new_video_resolution == "audio":
             return data.streams.get_audio_only().download('Download/')
 '''
+
+ts = "#11. Стандартные шаблонные фильтры | Уроки по Django 4"
+
+
+print(ts.join("_"))

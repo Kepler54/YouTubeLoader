@@ -10,21 +10,25 @@ customtkinter.set_default_color_theme("dark-blue")
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-        self.pad = 20
+        self.pad = 10
 
         # window
         self.title("YouTubeLoader")
-        self.geometry("800x380")
+        self.geometry("800x400")
 
         # grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure((2, 3), weight=0)
-        self.grid_rowconfigure((0, 1, 2), weight=1)
+        self.grid_rowconfigure(1, weight=1)
+
+        # textbox
+        self.textbox = customtkinter.CTkTextbox(self)
+        self.textbox.grid(row=1, column=1, padx=self.pad, pady=self.pad, sticky="nsew")
 
         # sidebar left frame with widgets
-        self.sidebar_frame = customtkinter.CTkFrame(self, width=100, corner_radius=4)
+        self.sidebar_frame = customtkinter.CTkFrame(self, width=100, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
+        # video resolution mode button
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
         self.video_resolution = customtkinter.CTkOptionMenu(
             self.sidebar_frame, values=["Highest", "Lowest", "Audio"], command=self.change_appearance_mode_event
@@ -32,20 +36,25 @@ class App(customtkinter.CTk):
         self.video_resolution.grid(row=5, column=0, padx=self.pad, pady=self.pad)
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
 
+        # playlist resolution mode button
+        self.sidebar_frame.grid_rowconfigure(4, weight=1)
+        self.playlist_resolution = customtkinter.CTkOptionMenu(
+            self.sidebar_frame, values=["Highest", "Lowest", "Audio"], command=self.change_appearance_mode_event
+        )
+        self.playlist_resolution.grid(row=6, column=0, padx=self.pad, pady=self.pad)
+        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
+
+        # appearance mode option button
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(
             self.sidebar_frame, values=["System", "Dark", "Light"], command=self.change_appearance_mode_event
         )
-        self.appearance_mode_optionemenu.grid(row=6, column=0, padx=self.pad, pady=self.pad)
+        self.appearance_mode_optionemenu.grid(row=1, column=0, padx=self.pad, pady=self.pad)
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
 
         # sidebar right frame with widgets
-        self.sidebar_frame = customtkinter.CTkFrame(self, width=100, corner_radius=4)
+        self.sidebar_frame = customtkinter.CTkFrame(self, width=100, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=4, rowspan=4, sticky="nsew")
-
-        # textbox
-        self.textbox = customtkinter.CTkTextbox(self)
-        self.textbox.grid(row=0, column=1, padx=self.pad, pady=self.pad, sticky="nsew")
 
         # save video entry and button
         self.save_video_entry = customtkinter.CTkEntry(self, placeholder_text="Введи ссылку на видео с Youtube: ")
