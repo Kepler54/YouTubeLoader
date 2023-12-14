@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 import customtkinter
 from os import mkdir
 from threading import Thread
@@ -22,26 +24,26 @@ class App(customtkinter.CTk):
 
         # window
         self.title(f"YouTubeLoader v. {self.ver}")
-        self.geometry("800x400")
+        self.geometry("1000x500")
 
         # grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
         # sidebar left frame with widgets
-        self.sidebar_frame = customtkinter.CTkFrame(self, width=100)
-        self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
+        self.sidebar_frame_left = customtkinter.CTkFrame(self, width=100)
+        self.sidebar_frame_left.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
         # settings label
         self.logo_label = customtkinter.CTkLabel(
-            self.sidebar_frame, text="Настройки:", font=customtkinter.CTkFont(size=10, weight="bold")
+            self.sidebar_frame_left, text="Настройки:", font=customtkinter.CTkFont(size=10, weight="bold")
         )
         self.logo_label.grid(row=0, column=0, padx=self.pad, pady=(10, 0))
 
         # appearance mode option button
-        self.sidebar_frame.grid_rowconfigure(1)
+        self.sidebar_frame_left.grid_rowconfigure(1)
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(
-            self.sidebar_frame, fg_color=self.button_fg_color, button_color=self.button_hover_color,
+            self.sidebar_frame_left, fg_color=self.button_fg_color, button_color=self.button_hover_color,
             dropdown_fg_color=self.button_hover_color_extra, button_hover_color=self.button_hover_color_extra,
             text_color=self.button_text_color, dropdown_text_color=self.button_text_color,
             dropdown_hover_color=self.button_hover_color, values=["System", "Dark", "Light"],
@@ -51,7 +53,7 @@ class App(customtkinter.CTk):
 
         # scaling mode option button
         self.scaling_optionemenu = customtkinter.CTkOptionMenu(
-            self.sidebar_frame, fg_color=self.button_fg_color, button_color=self.button_hover_color,
+            self.sidebar_frame_left, fg_color=self.button_fg_color, button_color=self.button_hover_color,
             dropdown_fg_color=self.button_hover_color_extra, button_hover_color=self.button_hover_color_extra,
             text_color=self.button_text_color, dropdown_hover_color=self.button_hover_color,
             values=["80%", "90%", "100%", "110%", "120%"], command=self.change_scaling_event
@@ -60,48 +62,48 @@ class App(customtkinter.CTk):
 
         # resolution mode
         self.logo_label = customtkinter.CTkLabel(
-            self.sidebar_frame, text="Качество видео:", font=customtkinter.CTkFont(size=10, weight="bold")
+            self.sidebar_frame_left, text="Качество видео:", font=customtkinter.CTkFont(size=10, weight="bold")
         )
         self.logo_label.grid(row=6, column=0, padx=self.pad)
 
         # video resolution mode button
-        self.sidebar_frame.grid_rowconfigure(2, weight=1)
+        self.sidebar_frame_left.grid_rowconfigure(2, weight=1)
         self.video_resolution = customtkinter.CTkOptionMenu(
-            self.sidebar_frame, fg_color=self.button_fg_color, button_color=self.button_hover_color,
+            self.sidebar_frame_left, fg_color=self.button_fg_color, button_color=self.button_hover_color,
             dropdown_fg_color=self.button_hover_color_extra, button_hover_color=self.button_hover_color_extra,
             text_color=self.button_text_color, dropdown_text_color=self.button_text_color,
             dropdown_hover_color=self.button_hover_color, values=["Highest", "Lowest", "Audio"],
             command=self.get_video_resolution_mode
         )
         self.video_resolution.grid(row=7, column=0, padx=self.pad, pady=self.pad)
-        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, anchor="w")
+        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame_left, anchor="w")
 
         # playlist resolution mode button
-        self.sidebar_frame.grid_rowconfigure(3, weight=1)
+        self.sidebar_frame_left.grid_rowconfigure(3, weight=1)
         self.playlist_resolution = customtkinter.CTkOptionMenu(
-            self.sidebar_frame, fg_color=self.button_fg_color, button_color=self.button_hover_color,
+            self.sidebar_frame_left, fg_color=self.button_fg_color, button_color=self.button_hover_color,
             dropdown_fg_color=self.button_hover_color_extra, button_hover_color=self.button_hover_color_extra,
             text_color=self.button_text_color, dropdown_text_color=self.button_text_color,
             dropdown_hover_color=self.button_hover_color, values=["Highest", "Lowest", "Audio"],
             command=self.get_video_resolution_mode
         )
         self.playlist_resolution.grid(row=8, column=0, padx=self.pad, pady=self.pad)
-        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, anchor="w")
+        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame_left, anchor="w")
 
         # textbox
         self.textbox = customtkinter.CTkTextbox(self, text_color="#228b22")
         self.textbox.grid(row=1, column=1, padx=self.pad, pady=self.pad, sticky="nsew")
 
         # sidebar right frame with widgets
-        self.sidebar_frame = customtkinter.CTkFrame(self, width=100)
-        self.sidebar_frame.grid(row=0, column=4, rowspan=4, sticky="nsew")
+        self.sidebar_frame_right = customtkinter.CTkFrame(self, width=100)
+        self.sidebar_frame_right.grid(row=0, column=3, rowspan=4, sticky="nsew")
 
         # info entry and button
         self.info_button = customtkinter.CTkButton(
             master=self, fg_color=self.button_fg_color, hover_color=self.button_hover_color, text="Инфо",
             text_color=self.button_text_color, command=self.get_info
         )
-        self.info_button.grid(row=1, column=4, padx=self.pad, pady=self.pad)
+        self.info_button.grid(row=1, column=3, padx=self.pad, pady=(0, 0))
 
         # save video entry and button
         self.save_video_entry = customtkinter.CTkEntry(
@@ -112,7 +114,7 @@ class App(customtkinter.CTk):
             master=self, fg_color=self.button_fg_color, hover_color=self.button_hover_color, text="Скачать",
             text_color=self.button_text_color, command=self.download_video
         )
-        self.save_video_button.grid(row=2, column=4, padx=self.pad, pady=self.pad, sticky="nsew")
+        self.save_video_button.grid(row=2, column=3, padx=self.pad, pady=self.pad, sticky="nsew")
 
         # save playlist entry and button
         self.save_playlist_entry = customtkinter.CTkEntry(
@@ -123,10 +125,19 @@ class App(customtkinter.CTk):
             master=self, fg_color=self.button_fg_color, hover_color=self.button_hover_color, text="Скачать",
             text_color=self.button_text_color, command=self.download_playlist
         )
-        self.save_playlist_button.grid(row=3, column=4, padx=self.pad, pady=self.pad, sticky="nsew")
+        self.save_playlist_button.grid(row=3, column=3, padx=self.pad, pady=self.pad, sticky="nsew")
+
         # set default values
         self.appearance_mode_optionemenu.set("Dark")
         self.scaling_optionemenu.set("100%")
+
+    def get_start_image(self):
+        try:
+            with open('images.spec') as img:
+                image = literal_eval(img.read())
+                self.textbox.insert("1.0", image)
+        except FileNotFoundError:
+            pass
 
     def get_info(self):
         self.textbox.insert(

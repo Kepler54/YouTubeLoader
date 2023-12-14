@@ -37,6 +37,7 @@ def verify_interface_view() -> Any | None:
         return csl.download_video()
     if read_interface_view() == 'app':
         app = App()
+        app.get_start_image()
         return app.mainloop()
     else:
         return csl.download_video()
