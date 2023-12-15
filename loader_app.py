@@ -1,14 +1,12 @@
-from ast import literal_eval
-
 import customtkinter
 from os import mkdir
 from threading import Thread
+from ast import literal_eval
 from pytube import YouTube, Playlist
 from pytube.exceptions import RegexMatchError
-from http.client import RemoteDisconnected
+from http.client import RemoteDisconnected, IncompleteRead
 
 customtkinter.set_appearance_mode("System")
-customtkinter.set_default_color_theme("dark-blue")
 
 
 class App(customtkinter.CTk):
@@ -16,15 +14,16 @@ class App(customtkinter.CTk):
         super().__init__()
         self.pad = 10
         self.ver = 1.0
+        self.line = 54
         self.button_text_color = "#c0c0c0"
-        self.button_fg_color = "#552b55"
-        self.button_hover_color = "#412641"
-        self.button_hover_color_extra = "#341b30"
+        self.button_fg_color = "#19476b"
+        self.button_hover_color = "#1b384f"
+        self.button_hover_color_extra = "#1a2c3b"
         self.video_resolution_mode = "Highest"
 
         # window
         self.title(f"YouTubeLoader v. {self.ver}")
-        self.geometry("1000x500")
+        self.geometry("800x400")
 
         # grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
@@ -91,7 +90,7 @@ class App(customtkinter.CTk):
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame_left, anchor="w")
 
         # textbox
-        self.textbox = customtkinter.CTkTextbox(self, text_color="#228b22")
+        self.textbox = customtkinter.CTkTextbox(self, text_color="#6c4e86")
         self.textbox.grid(row=1, column=1, padx=self.pad, pady=self.pad, sticky="nsew")
 
         # sidebar right frame with widgets
@@ -103,11 +102,11 @@ class App(customtkinter.CTk):
             master=self, fg_color=self.button_fg_color, hover_color=self.button_hover_color, text="Инфо",
             text_color=self.button_text_color, command=self.get_info
         )
-        self.info_button.grid(row=1, column=3, padx=self.pad, pady=(0, 0))
+        self.info_button.grid(row=1, column=3, padx=self.pad, pady=self.pad)
 
         # save video entry and button
         self.save_video_entry = customtkinter.CTkEntry(
-            self, border_color=self.button_fg_color, placeholder_text="Введи ссылку на видео с Youtube: "
+            self, border_color=self.button_hover_color_extra, placeholder_text="Введи ссылку на видео с Youtube: "
         )
         self.save_video_entry.grid(row=2, column=1, columnspan=2, padx=self.pad, pady=self.pad, sticky="nsew")
         self.save_video_button = customtkinter.CTkButton(
@@ -118,7 +117,7 @@ class App(customtkinter.CTk):
 
         # save playlist entry and button
         self.save_playlist_entry = customtkinter.CTkEntry(
-            self, border_color=self.button_fg_color, placeholder_text="Введи ссылку на плейлист Youtube: "
+            self, border_color=self.button_hover_color_extra, placeholder_text="Введи ссылку на плейлист Youtube: "
         )
         self.save_playlist_entry.grid(row=3, column=1, columnspan=2, padx=self.pad, pady=self.pad, sticky="nsew")
         self.save_playlist_button = customtkinter.CTkButton(
@@ -128,21 +127,21 @@ class App(customtkinter.CTk):
         self.save_playlist_button.grid(row=3, column=3, padx=self.pad, pady=self.pad, sticky="nsew")
 
         # set default values
-        self.appearance_mode_optionemenu.set("Dark")
+        self.appearance_mode_optionemenu.set("System")
         self.scaling_optionemenu.set("100%")
 
     def get_start_image(self):
         try:
-            with open('images.spec') as img:
-                image = literal_eval(img.read())
-                self.textbox.insert("1.0", image)
-        except FileNotFoundError:
+            with open('images.spec', encoding='UTF-8') as img:
+                self.textbox.insert("1.0", literal_eval(img.read()))
+        except (FileNotFoundError, SyntaxError):
             pass
 
     def get_info(self):
         self.textbox.insert(
             "1.0",
-            f"\n{41 * '─'}\nhttps://github.com/Kepler54/YouTubeLoader\n© 2024 YouTubeLoader\n{41 * '─'}\n\n"
+            f"\n{self.line * '─'}\nhttps://github.com/Kepler54/YouTubeLoader\n"
+            f"© 2024 YouTubeLoader\n{self.line * '─'}\n\n"
         )
 
     @staticmethod
@@ -160,14 +159,18 @@ class App(customtkinter.CTk):
     def get_video_info(self):
         try:
             data = YouTube(self.save_video_entry.get())
-            self.textbox.insert("1.0", f"\n{41 * '─'}\nИдёт загрузка видео: '{data.title}'\n{41 * '─'}\n")
+            self.textbox.insert(
+                "1.0", f"\n{self.line * '─'}\nИдёт загрузка видео: '{data.title}'\n{self.line * '─'}\n"
+            )
         except RegexMatchError:
             pass
 
     def get_playlist_info(self):
         try:
             data = Playlist(self.save_playlist_entry.get())
-            self.textbox.insert("1.0", f"\n{41 * '─'}\nИдёт загрузка плейлиста: '{data.title}'\n{41 * '─'}\n")
+            self.textbox.insert(
+                "1.0", f"\n{self.line * '─'}\nИдёт загрузка плейлиста: '{data.title}'\n{self.line * '─'}\n"
+            )
         except KeyError:
             pass
 
@@ -182,10 +185,14 @@ class App(customtkinter.CTk):
             elif self.video_resolution_mode == "Audio":
                 return data.streams.get_audio_only().download('Download/')
         except RegexMatchError:
-            self.textbox.insert("1.0", f"\n{41 * '─'}\nВведите ссылку на видео!\n{41 * '─'}\n")
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nВведите ссылку на видео!\n{self.line * '─'}\n")
             self.save_video_entry.delete(0, 1000000)
         except RemoteDisconnected:
-            self.textbox.insert("1.0", f"\n{41 * '─'}\nНет подключения к Интернету!\n{41 * '─'}\n")
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nНет подключения к Интернету!\n{self.line * '─'}\n")
+        except IncompleteRead:
+            self.textbox.insert(
+                "1.0", f"\n{self.line * '─'}\nНевозможно скачать видео, попробуйте позднее!\n{self.line * '─'}\n"
+            )
 
     def save_playlist(self):
         try:
@@ -201,11 +208,11 @@ class App(customtkinter.CTk):
                 elif self.video_resolution_mode == "Audio":
                     data.streams.get_audio_only().download(f'Download/{"_".join(links.title.split())}')
         except KeyError:
-            self.textbox.insert("1.0", f"\n{41 * '─'}\nВведите ссылку на плейлист!\n{41 * '─'}\n")
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nВведите ссылку на плейлист!\n{self.line * '─'}\n")
         except FileExistsError:
-            self.textbox.insert("1.0", f"\n{41 * '─'}\nПлейлист уже существует!\n{41 * '─'}\n")
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nПлейлист уже существует!\n{self.line * '─'}\n")
         except RemoteDisconnected:
-            self.textbox.insert("1.0", f"\n{41 * '─'}\nНет подключения к Интернету!\n{41 * '─'}\n")
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nНет подключения к Интернету!\n{self.line * '─'}\n")
 
     def download_video(self):
         Thread(target=self.save_video).start()
