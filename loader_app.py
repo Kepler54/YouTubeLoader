@@ -127,16 +127,41 @@ class App(customtkinter.CTk):
         self.appearance_mode_optionemenu.set("System")
         self.scaling_optionemenu.set("100%")
 
-    def get_start_image(self) -> None:
+    def get_start_image(self) -> int:
         """
         The function reads an image from the images document
         :return: None
         """
         try:
-            with open('images.spec', encoding='UTF-8') as img:
-                self.textbox.insert("1.0", literal_eval(img.read()))
+            with open('images.spec', encoding='UTF-8') as img_exist:
+                self.textbox.insert("1.0", literal_eval(img_exist.read()))
         except (FileNotFoundError, SyntaxError):
-            pass
+            with open('images.spec', 'w') as img_created:
+                img = img_created.write(
+                    '''(
+                    """
+
+                                ⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                                ⣿⣿⡟⣠⡙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                                ⣿⣿⣿⡈⢻⣷⢬⣝⡻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠟⣛⣽⣿⣿
+                                ⣿⣿⣿⣷⢈⢻⣷⣍⡛⠷⣄⣶⣤⣶⣶⣾⣭⣩⣶⣶⣶⣭⣉⡙⠛⣋⣭⡶⠞⣋⣿⡿⣰⣿
+                                ⣿⣿⣿⣿⡇⢀⢽⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠟⠋⢡⣶⣿⡿⠟⢡⣿⣿
+                                ⣿⣿⣿⣿⣿⡦⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣿⣿⡟⢃⢠⣿⣿⣿
+                                ⣿⣿⣿⣿⣿⢃⣴⣿⠛⠿⣿⣿⣿⣿⣿⣷⣯⠽⠻⣿⣿⣿⣿⣿⣿⣿⡿⣿⠏⢠⣾⣿⣿⣿
+                                ⣿⣿⣿⣿⡟⢸⣿⣿⣧⣤⣼⣿⣿⣿⣿⣁⠀⣀⣠⣶⣿⣿⣿⣿⣿⣿⣿⣿⡄⣿⣿⣿⣿⣿
+                                ⣿⣿⣿⣿⡇⢸⡅⢿⣿⡟⢭⣟⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⢿⣿⣿⣇⢸⣿⣿⣿⣿
+                                ⣿⣿⣿⣿⡇⢸⠧⣮⢿⣿⣦⡰⠾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣽⣿⠫⠸⣿⣿⣿⣿
+                                ⣿⣿⣿⣿⡇⢸⢾⣿⡌⠉⠁⠈⠙⠻⠿⢿⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⣿⣿⣿⣿
+                                ⣿⣿⣿⣿⣇⢸⣾⣿⣿⡰⣶⣿⣿⣦⣤⣤⣤⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⡷⢰⣿⣿⣿⣿
+                                ⣿⣿⣿⣿⣿⣐⠿⠷⣿⠷⠯⠍⠻⠻⠛⠋⠹⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠷⠤⢘⣿⣿⣿⣿
+                                ⣿⣿⣿⣿⣿⣿⣶⣿⣿⣶⣤⣭⣿⣿⣿⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿
+                    """
+                    )'''
+                )
+                self.textbox.insert(
+                    "1.0", f"\n{self.line * '─'}\nПерезапустите приложение!\n{self.line * '─'}\n"
+                )
+                return img
 
     def get_info(self) -> None:
         """
