@@ -14,7 +14,7 @@ class App(customtkinter.CTk):
         super().__init__()
         self.pad = 10
         self.ver = 1.0
-        self.line = 54
+        self.line = 67
         self.row_first = 0
         self.row_second = 1
         self.row_third = 2
@@ -30,7 +30,7 @@ class App(customtkinter.CTk):
 
         # window
         self.title(f"YouTubeLoader v. {self.ver} (Beta)")
-        self.geometry("800x400")
+        self.geometry("900x450")
 
         # grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
@@ -138,7 +138,7 @@ class App(customtkinter.CTk):
         self.textbox.insert(
             "1.0",
             f"\n{self.line * '─'}\nhttps://github.com/Kepler54/YouTubeLoader\n"
-            f"© 2024 YouTubeLoader\n{self.line * '─'}\n\n"
+            f"© 2024 YouTubeLoader v. {self.ver} (Beta)\n{self.line * '─'}\n\n"
         )
 
     @staticmethod
@@ -189,16 +189,11 @@ class App(customtkinter.CTk):
         except exceptions.AgeRestrictedError:
             self.textbox.insert("1.0", f"\n{self.line * '─'}\nВидео имеет возрастные ограничения!\n{self.line * '─'}\n")
         except exceptions.LiveStreamError:
-            self.textbox.insert(
-                "1.0",
-                f"\n{self.line * '─'}\nПопробуйте скачать видео после завершения прямого эфира...\n{self.line * '─'}\n"
-            )
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nПодождите завершения прямого эфира!\n{self.line * '─'}\n")
         except exceptions.VideoUnavailable:
             self.textbox.insert("1.0", f"\n{self.line * '─'}\nДанный видос больше не доступен...\n{self.line * '─'}\n")
         except IncompleteRead:
-            self.textbox.insert(
-                "1.0", f"\n{self.line * '─'}\nНевозможно скачать видео, попробуйте позднее!\n{self.line * '─'}\n"
-            )
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nНе удалось скачать видео!\n{self.line * '─'}\n")
         except KeyboardInterrupt:
             self.textbox.insert("1.0", f"\n{self.line * '─'}\nПрограмма прервана!\n{self.line * '─'}\n")
 
@@ -220,28 +215,19 @@ class App(customtkinter.CTk):
         except RemoteDisconnected:
             self.textbox.insert("1.0", f"\n{self.line * '─'}\nНет подключения к Интернету!\n{self.line * '─'}\n")
         except exceptions.AgeRestrictedError:
-            self.textbox.insert(
-                "1.0", f"\n{self.line * '─'}\nВидео из плейлиста имеет возрастные ограничения!\n{self.line * '─'}\n"
-            )
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nВидео имеет возрастные ограничения!\n{self.line * '─'}\n")
         except exceptions.LiveStreamError:
-            self.textbox.insert(
-                "1.0",
-                f"\n{self.line * '─'}\nПопробуйте скачать видео после завершения прямого эфира...\n{self.line * '─'}\n"
-            )
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nПодождите завершения прямого эфира!\n{self.line * '─'}\n")
         except exceptions.VideoUnavailable:
-            self.textbox.insert("1.0",
-                                f"\n{self.line * '─'}\nДанный плейлист больше не доступен...\n{self.line * '─'}\n")
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nПлейлист больше не доступен!\n{self.line * '─'}\n")
         except IncompleteRead:
-            self.textbox.insert(
-                "1.0",
-                f"\n{self.line * '─'}\nНевозможно скачать видео из плейлиста, попробуйте позднее!\n{self.line * '─'}\n"
-            )
+            self.textbox.insert("1.0", f"\n{self.line * '─'}\nНе удалось скачать видео!\n{self.line * '─'}\n")
         except KeyError:
             self.textbox.insert("1.0", f"\n{self.line * '─'}\nВведите ссылку на плейлист!\n{self.line * '─'}\n")
         except FileExistsError:
             self.textbox.insert("1.0", f"\n{self.line * '─'}\nПлейлист уже существует!\n{self.line * '─'}\n")
         except KeyboardInterrupt:
-            self.textbox.insert("1.0", f"\n{self.line * '─'}\nПрограмма прервана!\n{self.line * '─'}\n")
+            pass
 
     def download_video(self):
         Thread(target=self.save_video).start()
