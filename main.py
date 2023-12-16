@@ -27,6 +27,13 @@ def read_interface_view() -> str | int:
             return ivw.write('app')
 
 
+def start_app() -> None:
+    app = App()
+    app.resizable(False, False)
+    app.get_start_image()
+    app.mainloop()
+
+
 def verify_interface_view() -> Any | None:
     """
     Function for selecting the interface view
@@ -36,10 +43,7 @@ def verify_interface_view() -> Any | None:
     if read_interface_view() == 'console':
         return csl.download_video()
     if read_interface_view() == 'app':
-        app = App()
-        app.resizable(False, False)
-        app.get_start_image()
-        return app.mainloop()
+        return start_app()
     else:
         return csl.download_video()
 
