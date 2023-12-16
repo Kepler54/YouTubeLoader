@@ -20,10 +20,10 @@ def read_interface_view() -> str | int:
     :return: str | int
     """
     try:
-        with open('interface_view.spec') as ivr:
+        with open('interface_view.spec', encoding='UTF-8') as ivr:
             return ivr.read()
     except FileNotFoundError:
-        with open('interface_view.spec', 'w') as ivw:
+        with open('interface_view.spec', 'w', encoding='UTF-8') as ivw:
             return ivw.write('app')
 
 
@@ -40,10 +40,10 @@ def verify_interface_view() -> Any | None:
     :return: Any | None
     """
     create_path()
-    if read_interface_view() == 'console':
-        return csl.download_video()
     if read_interface_view() == 'app':
         return start_app()
+    elif read_interface_view() == 'console':
+        return csl.download_video()
     else:
         return csl.download_video()
 
