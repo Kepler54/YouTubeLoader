@@ -127,14 +127,22 @@ class App(customtkinter.CTk):
         self.appearance_mode_optionemenu.set("System")
         self.scaling_optionemenu.set("100%")
 
-    def get_start_image(self):
+    def get_start_image(self) -> None:
+        """
+        The function reads an image from a images.spec document
+        :return: None
+        """
         try:
             with open('images.spec', encoding='UTF-8') as img:
                 self.textbox.insert("1.0", literal_eval(img.read()))
         except (FileNotFoundError, SyntaxError):
             pass
 
-    def get_info(self):
+    def get_info(self) -> None:
+        """
+        The function gives info about the program
+        :return: None
+        """
         self.textbox.insert(
             "1.0",
             f"\n{self.line * '─'}\nhttps://github.com/Kepler54/YouTubeLoader\n"
@@ -142,18 +150,37 @@ class App(customtkinter.CTk):
         )
 
     @staticmethod
-    def change_appearance_mode(new_appearance_mode: str):
+    def change_appearance_mode(new_appearance_mode: str) -> None:
+        """
+        The function changes the appearance mode
+        :param new_appearance_mode: str
+        :return: None
+        """
         customtkinter.set_appearance_mode(new_appearance_mode)
 
     @staticmethod
-    def change_scaling_event(new_scaling: str):
+    def change_scaling_event(new_scaling: str) -> None:
+        """
+        The function changes the scaling
+        :param new_scaling: str
+        :return: None
+        """
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
-    def get_resolution_mode(self, new_video_resolution_mode: str):
+    def get_resolution_mode(self, new_video_resolution_mode: str) -> None:
+        """
+        The function changes the video quality
+        :param new_video_resolution_mode: str
+        :return: None
+        """
         self.video_resolution_mode = new_video_resolution_mode
 
-    def get_video_info(self):
+    def get_video_info(self) -> None:
+        """
+        The function gives info about the video
+        :return: None
+        """
         try:
             data = YouTube(self.save_video_entry.get())
             self.textbox.insert(
@@ -162,7 +189,11 @@ class App(customtkinter.CTk):
         except RegexMatchError:
             pass
 
-    def get_playlist_info(self):
+    def get_playlist_info(self) -> None:
+        """
+        The function gives info about the playlist
+        :return: None
+        """
         try:
             data = Playlist(self.save_playlist_entry.get())
             self.textbox.insert(
@@ -171,7 +202,11 @@ class App(customtkinter.CTk):
         except KeyError:
             pass
 
-    def save_video(self):
+    def save_video(self) -> object:
+        """
+        The function downloads the video in different quality
+        :return: object
+        """
         try:
             data = YouTube(self.save_video_entry.get())
             self.save_video_entry.delete(0, 1000000)
@@ -197,7 +232,11 @@ class App(customtkinter.CTk):
         except KeyboardInterrupt:
             self.textbox.insert("1.0", f"\n{self.line * '─'}\nПрограмма прервана!\n{self.line * '─'}\n")
 
-    def save_playlist(self):
+    def save_playlist(self) -> None:
+        """
+        The function downloads the playlist in different quality
+        :return: None
+        """
         try:
             links = Playlist(self.save_playlist_entry.get())
             self.save_playlist_entry.delete(0, 1000000)
@@ -229,10 +268,18 @@ class App(customtkinter.CTk):
         except KeyboardInterrupt:
             pass
 
-    def download_video(self):
+    def download_video(self) -> None:
+        """
+        Calls the video download function in thread
+        :return: None
+        """
         Thread(target=self.save_video).start()
         Thread(target=self.get_video_info).start()
 
-    def download_playlist(self):
+    def download_playlist(self) -> None:
+        """
+        Calls the playlist download function in thread
+        :return: None
+        """
         Thread(target=self.save_playlist).start()
         Thread(target=self.get_playlist_info).start()
