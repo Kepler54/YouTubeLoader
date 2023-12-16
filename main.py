@@ -24,7 +24,7 @@ def read_interface_view() -> str | int:
             return ivr.read()
     except FileNotFoundError:
         with open('interface_view.spec', 'w') as ivw:
-            return ivw.write('console')
+            return ivw.write('app')
 
 
 def verify_interface_view() -> Any | None:
