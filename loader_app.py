@@ -133,11 +133,11 @@ class App(customtkinter.CTk):
         :return: None
         """
         try:
-            with open('images.spec', encoding='UTF-8') as img_exist:
-                self.textbox.insert("1.0", literal_eval(img_exist.read()))
+            with open('images.spec', encoding='UTF-8') as image_exist:
+                self.textbox.insert("1.0", literal_eval(image_exist.read()))
         except (FileNotFoundError, SyntaxError):
-            with open('images.spec', 'w') as img_created:
-                img = img_created.write(
+            with open('images.spec', 'w', encoding='UTF-8') as image_created:
+                image = image_created.write(
                     '''(
                     """
 
@@ -161,7 +161,7 @@ class App(customtkinter.CTk):
                 self.textbox.insert(
                     "1.0", f"\n{self.line * '─'}\nПерезапустите приложение!\n{self.line * '─'}\n"
                 )
-                return img
+                return image
 
     def get_info(self) -> None:
         """
