@@ -40,10 +40,10 @@ def verify_interface_view() -> Any | None:
     :return: Any | None
     """
     create_path()
+    if read_interface_view() == 'console':
+        return csl.download_video()
     if read_interface_view() == 'app':
         return start_app()
-    elif read_interface_view() == 'console':
-        return csl.download_video()
     else:
         return csl.download_video()
 
