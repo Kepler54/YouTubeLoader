@@ -129,7 +129,7 @@ class App(customtkinter.CTk):
 
     def get_start_image(self) -> None:
         """
-        The function reads an image from a images.spec document
+        The function reads an image from the images document
         :return: None
         """
         try:
