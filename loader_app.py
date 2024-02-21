@@ -1,4 +1,5 @@
 import customtkinter
+import ttkthemes
 from os import mkdir
 from threading import Thread
 from ast import literal_eval
@@ -31,6 +32,7 @@ class App(customtkinter.CTk):
         # window
         self.title(f"YouTubeLoader v. {self.ver} (Beta)")
         self.geometry("900x450")
+        window = ttkthemes.ThemedTk(theme="arc")
 
         # grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
